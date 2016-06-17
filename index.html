@@ -1,107 +1,107 @@
 <!doctype html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>tracking.js - tag friends</title>
-  <link rel="stylesheet" href="libs/trackingjs/demo.css">
-  <script src="libs/trackingjs/tracking-min.js"></script>
-  <script src="libs/trackingjs/data/face-min.js"></script>
-  <script src="libs/jquery.min.js"></script>
-  <style>
-    #img {
-      position: absolute;
-    }
-    #cat0 {
-    	position: absolute;
-    	display: none;
-    }
-    .cat {
-    	position: absolute;
-    	display: block;
-    }
-    .demo-frame {
-      -webkit-user-select: none;  /* Chrome all / Safari all */
-      -moz-user-select: none;     /* Firefox all */
-      -ms-user-select: none;      /* IE 10+ */
-      user-select: none;          /* Likely future */  
-    }
-    .button {
-      width: 100px;
-      height: 30px;
-      background-color: red;
-      text-align: center;
-      -webkit-user-select: none;  /* Chrome all / Safari all */
-      -moz-user-select: none;     /* Firefox all */
-      -ms-user-select: none;      /* IE 10+ */
-      user-select: none;          /* Likely future */
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="utf-8">
+    <title>tracking.js - tag friends</title>
+    <link rel="stylesheet" href="libs/trackingjs/demo.css">
+    <script src="libs/trackingjs/tracking-min.js"></script>
+    <script src="libs/trackingjs/data/face-min.js"></script>
+    <script src="libs/jquery.min.js"></script>
+    <style>
+        #img {
+            position: absolute;
+        }
+        #cat0 {
+            position: absolute;
+            display: none;
+        }
+        .cat {
+            position: absolute;
+            display: block;
+        }
+        .demo-frame {
+            -webkit-user-select: none;  /* Chrome all / Safari all */
+            -moz-user-select: none;     /* Firefox all */
+            -ms-user-select: none;      /* IE 10+ */
+            user-select: none;          /* Likely future */  
+        }
+        .button {
+            width: 100px;
+            height: 30px;
+            background-color: red;
+            text-align: center;
+            -webkit-user-select: none;  /* Chrome all / Safari all */
+            -moz-user-select: none;     /* Firefox all */
+            -ms-user-select: none;      /* IE 10+ */
+            user-select: none;          /* Likely future */
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-  <div class="button" id="button">click</div>
-  <div class="demo-frame">
-    <div class="demo-container" id="demo-container">
-    	<span id="photo"><img id="img" src="images/wb.png" /></span>
-    	<img id="cat0" src="images/catface.png" />
+    <div class="button" id="button">click</div>
+    <div class="demo-frame">
+        <div class="demo-container" id="demo-container">
+            <span id="photo"><img id="img" src="images/wb.png" /></span>
+            <img id="cat0" src="images/catface.png" />
+        </div>
     </div>
-  </div>
-  <form id="form1">
-    <input type='file' id="previewimage" />
-    <img id="preview" src="" style="display:none" />
-  </form>
-  <script>
-    function preview(input) {
-      if (input.files && input.files[0]) {
-        var freader = new FileReader();
-        freader.onload = function (e) {
-          $("#preview").show();
-          $('#preview').attr('src', e.target.result);
+    <form id="form1">
+        <input type='file' id="previewimage" />
+        <img id="preview" src="" style="display:none" />
+    </form>
+    <script>
+        function preview(input) {
+            if (input.files && input.files[0]) {
+                var freader = new FileReader();
+                freader.onload = function (e) {
+                    $("#preview").show();
+                    $('#preview').attr('src', e.target.result);
+                }
+                freader.readAsDataURL(input.files[0]);
+            }
         }
-        freader.readAsDataURL(input.files[0]);
-      }
-    }
-    $("#previewimage").change(function(){
-      preview(this);
-    });
-    window.onload = function() {
-      var img = document.getElementById('img');
-      var tracker = new tracking.ObjectTracker('face');
-      tracking.track(img, tracker);
-      tracker.on('track', function(event) {
-        event.data.forEach(function(rect) {
-          var cat = document.getElementById("cat0").cloneNode(true);
-          cat.setAttribute("id", "");
-          cat.setAttribute("class", "cat");
-          document.getElementById("demo-container").appendChild(cat);
-          cat.style.left = rect.x + "px";
-          cat.style.top = rect.y + "px";
-          cat.style.width = rect.width + "px";
+        $("#previewimage").change(function(){
+            preview(this);
         });
-      });
-      var on = true;
-      document.getElementById("button").onclick = handleclick;
-      function handleclick(){
-        console.log("clicked");
-        if(on) {
-          console.log("on");
-          var x = document.getElementsByClassName("cat");
-          window.x = x;
-          for(var i=0;i<x.length;i++){
-            x[i].style.display= "none";
-          }
-          on = false;
-        }
-        else {
-          console.log("off");
-          var x = document.getElementsByClassName("cat");
-          for(var i=0;i<x.length;i++){
-            x[i].style.display= "block";
-          }
-          on = true;
-        }
-      };
-    };
-  </script>
+        window.onload = function() {
+            var img = document.getElementById('img');
+            var tracker = new tracking.ObjectTracker('face');
+            tracking.track(img, tracker);
+            tracker.on('track', function(event) {
+                event.data.forEach(function(rect) {
+                    var cat = document.getElementById("cat0").cloneNode(true);
+                    cat.setAttribute("id", "");
+                    cat.setAttribute("class", "cat");
+                    document.getElementById("demo-container").appendChild(cat);
+                    cat.style.left = rect.x + "px";
+                    cat.style.top = rect.y + "px";
+                    cat.style.width = rect.width + "px";
+                });
+            });
+            var on = true;
+            document.getElementById("button").onclick = handleclick;
+            function handleclick(){
+                console.log("clicked");
+                if(on) {
+                    console.log("on");
+                    var x = document.getElementsByClassName("cat");
+                    window.x = x;
+                    for(var i=0;i<x.length;i++){
+                        x[i].style.display= "none";
+                    }
+                    on = false;
+                }
+                else {
+                    console.log("off");
+                    var x = document.getElementsByClassName("cat");
+                    for(var i=0;i<x.length;i++){
+                        x[i].style.display= "block";
+                    }
+                    on = true;
+                }
+            };
+        };
+    </script>
 </body>
 </html>
