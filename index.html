@@ -8,9 +8,6 @@
     <script src="libs/trackingjs/data/face-min.js"></script>
     <script src="libs/jquery.min.js"></script>
     <style>
-        #img {
-            position: absolute;
-        }
         #cat0 {
             position: absolute;
             display: none;
@@ -18,12 +15,6 @@
         .cat {
             position: absolute;
             display: block;
-        }
-        .demo-frame {
-            -webkit-user-select: none;  /* Chrome all / Safari all */
-            -moz-user-select: none;     /* Firefox all */
-            -ms-user-select: none;      /* IE 10+ */
-            user-select: none;          /* Likely future */  
         }
         .button {
             width: 100px;
@@ -39,32 +30,30 @@
     </style>
 </head>
 <body>
-    <div class="button" id="button">click</div>
-    <div class="demo-frame">
-        <div class="demo-container" id="demo-container">
-            <span id="photo"><img id="img" src="images/wb.png" /></span>
-            <img id="cat0" src="images/catface.png" />
-        </div>
+    <div class="image-container" id="image-container">
+        <span id="photo"><img id="img" src="images/wb.png" /></span>
+        <img id="cat0" src="images/catface.png" />
     </div>
+    <div class="button" id="button">click</div>
     <form id="form1">
         <input type='file' id="previewimage" />
         <img id="preview" src="" style="display:none" />
     </form>
     <script>
-        function preview(input) {
-            if (input.files && input.files[0]) {
-                var freader = new FileReader();
-                freader.onload = function (e) {
-                    $("#preview").show();
-                    $('#preview').attr('src', e.target.result);
-                }
-                freader.readAsDataURL(input.files[0]);
-            }
-        }
-        $("#previewimage").change(function(){
-            preview(this);
-        });
         window.onload = function() {
+            function preview(input) {
+                if (input.files && input.files[0]) {
+                    var freader = new FileReader();
+                    freader.onload = function (e) {
+                        $("#preview").show();
+                        $('#preview').attr('src', e.target.result);
+                    }
+                    freader.readAsDataURL(input.files[0]);
+                }
+            }
+            $("#previewimage").change(function(){
+                preview(this);
+            });
             var img = document.getElementById('img');
             var tracker = new tracking.ObjectTracker('face');
             tracking.track(img, tracker);
@@ -73,7 +62,7 @@
                     var cat = document.getElementById("cat0").cloneNode(true);
                     cat.setAttribute("id", "");
                     cat.setAttribute("class", "cat");
-                    document.getElementById("demo-container").appendChild(cat);
+                    document.getElementById("image-container").appendChild(cat);
                     cat.style.left = rect.x + "px";
                     cat.style.top = rect.y + "px";
                     cat.style.width = rect.width + "px";
