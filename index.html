@@ -76,22 +76,22 @@
     </div>
   </div>
   <form id="form1">
-      <input type='file' id="previewimage" />
-      <img id="preview" src="" style="display:none" />
+    <input type='file' id="previewimage" />
+    <img id="preview" src="" style="display:none" />
   </form>
   <script>
     function preview(input) {
-        if (input.files && input.files[0]) {
-            var freader = new FileReader();
-            freader.onload = function (e) {
-                $("#preview").show();
-                $('#preview').attr('src', e.target.result);
-            }
-            freader.readAsDataURL(input.files[0]);
+      if (input.files && input.files[0]) {
+        var freader = new FileReader();
+        freader.onload = function (e) {
+          $("#preview").show();
+          $('#preview').attr('src', e.target.result);
         }
+        freader.readAsDataURL(input.files[0]);
+      }
     }
     $("#previewimage").change(function(){
-        preview(this);
+      preview(this);
     });
     window.onload = function() {
       var img = document.getElementById('img');
