@@ -13,6 +13,7 @@
   <script src="libs/trackingjs/tracking-min.js"></script>
   <script src="libs/trackingjs/data/face-min.js"></script>
 
+<script src="libs/jquery.min.js"></script>
 
   <style>
   #photo:hover .rect {
@@ -48,6 +49,7 @@
     opacity: 0;
   }
 
+  /*
   input {
     border: 0px;
     bottom: -42px;
@@ -63,6 +65,7 @@
     width: 180px;
     transition: opacity .35s ease-out;
   }
+  */
 
   #img {
     position: absolute;
@@ -140,8 +143,31 @@
   </div>
 
 	
+  <form id="form1">
+      <input type='file' id="previewimage" />
+      <img id="preview" src="" style="display:none" />
+  </form>
 
   <script>
+
+
+    function preview(input) {
+        if (input.files && input.files[0]) {
+            var freader = new FileReader();
+            freader.onload = function (e) {
+                $("#preview").show();
+                $('#preview').attr('src', e.target.result);
+            }
+            freader.readAsDataURL(input.files[0]);
+        }
+    }
+    
+    $("#previewimage").change(function(){
+        preview(this);
+    });
+
+
+
     window.onload = function() {
       var img = document.getElementById('img');
 
