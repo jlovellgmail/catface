@@ -31,6 +31,15 @@
 		.facerect {
 			border: 2px solid green;
 		}
+		.facegroup1 {
+			border: 2px solid green;
+		}
+		.facegroup2 {
+			border: 2px solid yellow;
+		}
+		.facegroup3 {
+			border: 2px solid red;
+		}
 	</style>
 </head>
 <body>
@@ -45,27 +54,60 @@
 	<script>
 		window.onload = function() {
 			var img = document.getElementById('img');
+			//--------------------------------------------------
 			var facelist = [];
+			window.facelist = facelist;
 			var eyelist = [];
 			var mouthlist = [];
 			var classname_eye = "eyerect";
 			var classname_mouth = "mouthrect";
 			var classname_face = "facerect";
+
+			flags = {};
+			flags.eyesdone = false;
 			tracktype("eye", eyelist, classname_eye);
+			flags.mouthsdone = false;
 			tracktype("mouth", mouthlist, classname_mouth);
+			flags.facesdone = false;
 			tracktype("face", facelist, classname_face);
+			
 			function tracktype(type, list, classname){
 				var tracker = new tracking.ObjectTracker(type);
 				tracking.track("#img", tracker);
 				tracker.on("track", function(event){
+
+					//console.log("event.data.length: " + event.data.length);
+					if(type == "face") flags.facesdone = true;
+					else if(type == "eye") flags.eyesdone = true;
+					else if(type == "mouth") flags.mouthsdone = true;
+
 					event.data.forEach(function(rect){
 						list.push(rect);
 					});
+					/*
+					// plot feature types (face, eyes, mouth) in different colors
 					list.forEach(function(item){
 						plotstyled(item.x, item.y, item.width, item.height, classname);
 					});
+					*/
+					if(flags.eyesdone && flags.mouthsdone && flags.facesdone){
+						getfacegroups();
+						// plot facegroups in different colors
+						facegrouplist.forEach(function(facegroup, i){
+							var classname = "facegroup" + (i+1);
+							
+							console.log(classname);
+							
+							plotstyled(facegroup.face, classname);
+							facegroup.eyelist.forEach(function(eye){
+								plotstyled(eye, classname);
+							});
+							plotstyled(facegroup.mouth, classname);
+						});
+					}
 				});
 			}
+			/*
 			function plotstyled(x,y,w,h,classname){
 				var rect = document.createElement('div');
 				document.querySelector('.demo-container').appendChild(rect);
@@ -76,6 +118,60 @@
 				rect.style.left = (img.offsetLeft + x) + 'px';
 				rect.style.top = (img.offsetTop + y) + 'px';
 			}
+			*/
+			function plotstyled(rect, classname){
+				var rectdiv = document.createElement('div');
+				document.querySelector('.demo-container').appendChild(rectdiv);
+				rectdiv.classList.add('rect');
+				rectdiv.classList.add(classname);
+				rectdiv.style.width = rect.width + 'px';
+				rectdiv.style.height = rect.height + 'px';
+				rectdiv.style.left = (img.offsetLeft + rect.x) + 'px';
+				rectdiv.style.top = (img.offsetTop + rect.y) + 'px';
+			}
+			//--------------------------------------------------
+			function getfacegroups(){
+				var facegrouplist = [];
+				window.facegrouplist = facegrouplist;
+				facelist.forEach(function(face){
+					var facegroup = {};
+					facegroup.face = face;
+					facegroup.eyelist = [];
+					eyelist.forEach(function(eye){
+						if(rectinsiderect(eye, face)){
+							facegroup.eyelist.push(eye);
+						}
+					});
+					mouthlist.forEach(function(mouth){
+						if(rectinsiderect(mouth, face)){
+							facegroup.mouth = mouth;
+						}
+					});
+					facegrouplist.push(facegroup);
+				});
+				function rectinsiderect(rectinside, rect){
+					var centerpoint = getcenterpoint(rectinside);
+					if(pointinsiderect(centerpoint, rect)) return true;
+					else return false;
+				}
+				function getcenterpoint(rect){
+					var x = rect.x + (rect.width / 2);
+					var y = rect.y + (rect.height / 2);
+					return {x:x, y:y};
+				}
+				function pointinsiderect(point, rect){
+					var xmin = rect.x;
+					var xmax = rect.x + rect.width;
+					var ymin = rect.y;
+					var ymax = rect.y + rect.height;
+					if(point.x > xmin && point.x < xmax
+						&& point.y > ymin && point.y < ymax){
+						return true;
+					}
+					else return false;
+				}
+			}
+			//--------------------------------------------------
 		};
 	</script>
 </body>
