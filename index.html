@@ -50,11 +50,8 @@
     <script>
         window.onload = function() {
             function preview(input) {
-
                 $("#preview-container").children().remove();
                 $("#preview-container").html("<img id='preview' src='' style='display:none' />");
-
-
                 if (input.files && input.files[0]) {
                     var freader = new FileReader();
                     freader.onload = function (e) {
@@ -63,55 +60,27 @@
                     }
                     freader.readAsDataURL(input.files[0]);
                 }
-
                 $("#preview").load(function(){
                     putfaces("preview", "preview-container");
                 });
-
-
-
             }
             $("#previewimage").change(function(){
                 preview(this);
             });
-            //
             putfaces("img", "image-container");
             function putfaces(imageid, containerid){
-                
-
                 var children = $("#" + containerid).children(".cat");
-                console.log("---------------");
-                console.log("containerid: " + containerid);
-                console.log("children('.cat'): " + children);
-                console.dir(children);
                 children.remove();
-
-                console.log("imageid: " + imageid);
-
                 var img = document.getElementById(imageid);
-
-                console.log("img: " + img);
-
                 var tracker = new tracking.ObjectTracker('face');
                 tracking.track(img, tracker);
                 tracker.on('track', function(event) {
-
-                    console.log("event.data: " + event.data);
-                    
                     event.data.forEach(function(rect) {
                         var cat = document.getElementById("cat0").cloneNode(true);
                         cat.setAttribute("id", "");
                         cat.setAttribute("class", "cat");
-                        
-                        //document.getElementById("image-container").appendChild(cat);
-                        //var container = document.getElementById(containerid)
                         var container = $("#" + containerid);
-                        
-                        console.log("container: " + container);
-                        window.container = container;
-                        
                         container[0].appendChild(cat);
-
                         cat.style.left = (rect.x - (rect.width * .25)) + "px";
                         cat.style.top = (rect.y - (rect.height * .4)) + "px";
                         cat.style.width = (rect.width * 1.5) + "px";
